@@ -38,7 +38,7 @@
       padding-top: 60px; 
     }
 
-    a:focus-visible, button:focus-visible, input:focus-visible {
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 4px;
     }
@@ -211,7 +211,6 @@
       gap: 20px; 
     }
 
-    /* Updated to support button styling natively */
     .category-card {
       background: var(--paper-warm);
       border: 1px solid var(--border);
@@ -328,39 +327,55 @@
       margin-bottom: 2rem;
     }
 
-    .contact-form {
+    .contact-form-full {
       display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 1rem;
       max-width: 500px;
       margin: 0 auto;
+      text-align: left;
     }
 
-    .form-group {
-      position: relative;
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
     }
 
-    .contact-form input {
+    .contact-form-full input,
+    .contact-form-full textarea {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
       color: var(--paper);
-      padding: 0.75rem 1.1rem;
+      padding: 0.85rem 1.1rem;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.9rem;
       border-radius: 2px;
-      width: 280px;
       outline: none;
       transition: border-color 0.2s;
+      width: 100%;
     }
 
-    .contact-form input:focus { border-color: var(--accent-light); }
+    .contact-form-full input::placeholder,
+    .contact-form-full textarea::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
 
-    .contact-form button {
+    .contact-form-full input:focus, 
+    .contact-form-full textarea:focus { 
+      border-color: var(--accent-light); 
+    }
+
+    .contact-form-full textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .contact-form-full button {
       background: var(--accent);
       color: var(--paper);
       border: none;
-      padding: 0.75rem 1.8rem;
+      padding: 1rem 2rem;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.85rem;
       font-weight: 500;
@@ -369,9 +384,14 @@
       border-radius: 2px;
       cursor: pointer;
       transition: background 0.2s;
+      width: 100%;
+      margin-top: 0.5rem;
     }
 
-    .contact-form button:hover { background: var(--accent-light); color: var(--ink); }
+    .contact-form-full button:hover { 
+      background: var(--accent-light); 
+      color: var(--ink); 
+    }
 
     .sr-only {
       position: absolute;
@@ -409,8 +429,7 @@
 
     @media (max-width: 480px) {
       .nav-links { display: none; } 
-      .contact-form input { width: 100%; }
-      .contact-form { flex-direction: column; width: 100%; }
+      .form-row { grid-template-columns: 1fr; }
       footer { flex-direction: column; gap: 1rem; text-align: center; }
     }
   </style>
@@ -450,6 +469,7 @@
     <p class="section-label">What we make</p>
     <div class="categories">
       
+      <!-- SQUARE API CHECKOUT BUTTON -->
       <button class="category-card" onclick="startCheckout('Primary Dive Reel Mount', 4500)">
         <span class="cat-icon" role="img" aria-label="Scuba Diving Mask">🤿</span>
         <div class="cat-name">Primary Dive Reel Mount</div>
@@ -503,22 +523,33 @@
   </section>
 
   <section class="contact-block" id="contact">
-    <h2>Stay in the loop.</h2>
-    <p>New drops, custom hardware runs, and production windows — straight to your inbox.</p>
+    <h2>Get in touch.</h2>
+    <p>Have a question about a product or need a custom print? Drop us a line.</p>
     
-    <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault(); alert('Subscribed!');">
-      <div class="form-group">
-        <label for="email-input" class="sr-only">Email Address</label>
-        <input 
-          type="email" 
-          id="email-input" 
-          name="email" 
-          placeholder="your@email.com" 
-          required 
-          autocomplete="email"
-        />
+    <!-- FormSubmit handles the backend routing automatically -->
+    <form class="contact-form-full" action="https://formsubmit.co/oddlayer10@gmail.com" method="POST">
+      
+      <!-- Security and routing configs -->
+      <input type="hidden" name="_subject" value="New Inquiry from Odd Layer">
+      <input type="hidden" name="_captcha" value="false">
+      
+      <div class="form-row">
+        <div style="position: relative;">
+          <label for="name-input" class="sr-only">Name</label>
+          <input type="text" id="name-input" name="name" required placeholder="Name">
+        </div>
+        <div style="position: relative;">
+          <label for="email-input" class="sr-only">Email Address</label>
+          <input type="email" id="email-input" name="email" required placeholder="Email">
+        </div>
       </div>
-      <button type="submit">Notify me</button>
+      
+      <div style="position: relative;">
+        <label for="message-input" class="sr-only">Message</label>
+        <textarea id="message-input" name="message" required placeholder="What are you looking for?"></textarea>
+      </div>
+      
+      <button type="submit">Send Message</button>
     </form>
   </section>
 </main>
@@ -528,6 +559,7 @@
   <span>© 2026 Odd Layer. Ontario, Canada.</span>
 </footer>
 
+<!-- SQUARE CHECKOUT SCRIPT -->
 <script>
   async function startCheckout(name, priceInCents) {
     try {
