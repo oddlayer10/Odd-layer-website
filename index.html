@@ -26,7 +26,6 @@
 
     html { 
       scroll-behavior: smooth; 
-      /* Dynamic offset to prevent fixed header from covering content headers */
       scroll-padding-top: 80px; 
     }
 
@@ -36,10 +35,9 @@
       color: var(--ink);
       font-size: 16px;
       line-height: 1.6;
-      padding-top: 60px; /* Counteracts the fixed nav height */
+      padding-top: 60px; 
     }
 
-    /* Focus styling for keyboard accessibility navigation */
     a:focus-visible, button:focus-visible, input:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 4px;
@@ -49,7 +47,6 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      /* Glassmorphism translucent backdrop styling */
       background: rgba(250, 249, 246, 0.85); 
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -93,7 +90,6 @@
     .nav-links a:hover { color: var(--accent); }
 
     .hero {
-      /* Accounts for dynamic mobile safari browser chrome sizing jumps */
       min-height: calc(100vh - 60px); 
       min-height: calc(100dvh - 60px); 
       display: flex;
@@ -209,13 +205,13 @@
       margin-bottom: 2.5rem;
     }
 
-    /* Enhanced auto-grid threshold layout */
     .categories {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px; 
     }
 
+    /* Updated to support button styling natively */
     .category-card {
       background: var(--paper-warm);
       border: 1px solid var(--border);
@@ -226,6 +222,10 @@
       text-decoration: none;
       border-radius: 4px;
       transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      text-align: left;
+      font-family: inherit;
+      cursor: pointer;
+      width: 100%;
     }
 
     .category-card:hover { 
@@ -373,7 +373,6 @@
 
     .contact-form button:hover { background: var(--accent-light); color: var(--ink); }
 
-    /* Screen-reader utility styles for core accessibility compliance */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -402,7 +401,6 @@
       color: var(--ink);
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .about-block { grid-template-columns: 1fr; gap: 3rem; }
       nav { padding: 0 1.5rem; }
@@ -410,7 +408,7 @@
     }
 
     @media (max-width: 480px) {
-      .nav-links { display: none; } /* Drops links for basic mobile layout scaling safely */
+      .nav-links { display: none; } 
       .contact-form input { width: 100%; }
       .contact-form { flex-direction: column; width: 100%; }
       footer { flex-direction: column; gap: 1rem; text-align: center; }
@@ -451,11 +449,13 @@
   <section id="shop">
     <p class="section-label">What we make</p>
     <div class="categories">
-      <a href="#contact" class="category-card">
+      
+      <button class="category-card" onclick="startCheckout('Primary Dive Reel Mount', 4500)">
         <span class="cat-icon" role="img" aria-label="Scuba Diving Mask">🤿</span>
-        <div class="cat-name">Dive gear</div>
-        <p class="cat-desc">Accessories, protective hardware, and custom-fit mounts for technical setups.</p>
-      </a>
+        <div class="cat-name">Primary Dive Reel Mount</div>
+        <p class="cat-desc">$45.00 CAD. Custom-fit PETG mount for technical setups.</p>
+      </button>
+
       <a href="#contact" class="category-card">
         <span class="cat-icon" role="img" aria-label="House">🏠</span>
         <div class="cat-name">Home goods</div>
@@ -528,6 +528,34 @@
   <span>© 2026 Odd Layer. Ontario, Canada.</span>
 </footer>
 
+<script>
+  async function startCheckout(name, priceInCents) {
+    try {
+      document.body.style.cursor = 'wait';
+
+      const response = await fetch('/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemName: name,
+          itemPrice: priceInCents
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Checkout error: ' + data.error);
+      }
+    } catch (err) {
+      alert('Failed to connect to checkout. Please check your connection.');
+    } finally {
+      document.body.style.cursor = 'default';
+    }
+  }
+</script>
+
 </body>
-  </html>
-  
+</html>
