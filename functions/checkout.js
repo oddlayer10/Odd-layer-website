@@ -1,19 +1,38 @@
 export async function onRequestPost(context) {
+  // CORS preflight handled by Cloudflare Pages — not needed here
+
   try {
     const input = await context.request.json();
-    
+
+    // Validate input
+    if (!Array.isArray(input.items) || input.items.length === 0) {
+      return jsonResponse({ error: 'Cart is empty or malformed.' }, 400);
+    }
+
+    for (const item of input.items) {
+      if (!item.name || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
+        return jsonResponse({ error: `Invalid item: ${JSON.stringify(item)}` }, 400);
+      }
+    }
+
+    // Build Square line items from cart array
+    const lineItems = input.items.map(item => ({
+      name: item.name,
+      quantity: String(item.quantity),
+      base_price_money: {
+        amount: item.price,       // price in cents (CAD)
+        currency: 'CAD'
+      }
+    }));
+
     const squareRequest = {
       idempotency_key: crypto.randomUUID(),
       order: {
         location_id: context.env.SQUARE_LOCATION_ID,
-        line_items: [{
-          name: input.itemName,
-          quantity: '1',
-          base_price_money: {
-            amount: input.itemPrice,
-            currency: 'CAD'
-          }
-        }]
+        line_items: lineItems
+      },
+      checkout_options: {
+        redirect_url: context.env.REDIRECT_URL || 'https://odd-layer.ca/thank-you'
       }
     };
 
@@ -29,18 +48,25 @@ export async function onRequestPost(context) {
 
     const data = await response.json();
 
-    if (data.payment_link && data.payment_link.url) {
-      return new Response(JSON.stringify({ url: data.payment_link.url }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } else {
-      return new Response(JSON.stringify({ error: data.errors[0].detail }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
+    if (!response.ok) {
+      const detail = data.errors?.[0]?.detail ?? 'Unknown Square error.';
+      return jsonResponse({ error: detail }, response.status);
     }
+
+    if (data.payment_link?.url) {
+      return jsonResponse({ url: data.payment_link.url });
+    }
+
+    return jsonResponse({ error: 'Square did not return a checkout URL.' }, 502);
+
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonResponse({ error: err.message }, 500);
   }
+}
+
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
