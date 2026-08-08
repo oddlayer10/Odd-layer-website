@@ -74,9 +74,28 @@
   .nav-logo span { color: var(--accent); font-style: italic; }
 
   .nav-logo img {
-    height: 400px;
+    height: 40px;
     width: auto;
     display: block;
+  }
+
+  /* Crops a large logo render down to a fixed window so oversized source
+     images (e.g. 400px tall) can still sit inside the 60px nav bar.
+     Adjust --logo-size to change how "zoomed in" the crop is;
+     adjust --logo-window to change the visible height in the nav. */
+  .logo-crop {
+    --logo-window: 40px;
+    --logo-size: 130px;
+    display: block;
+    height: var(--logo-window);
+    overflow: hidden;
+  }
+
+  .logo-crop img {
+    height: var(--logo-size);
+    width: auto;
+    display: block;
+    margin-top: calc((var(--logo-window) - var(--logo-size)) / 2);
   }
 
   .nav-right {
@@ -774,7 +793,9 @@
 <header>
   <nav>
     <a href="#" class="nav-logo">
-      <img src="OddLayer (2000 x 1600 px).png" alt="Odd Layer" height="40">
+      <span class="logo-crop">
+        <img src="OddLayer (2000 x 1600 px).png" alt="Odd Layer">
+      </span>
     </a>
     <div class="nav-right">
       <ul class="nav-links">
