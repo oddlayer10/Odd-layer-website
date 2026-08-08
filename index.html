@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<!-- Swap in your real favicon once exported, e.g. favicon-black-transparent.png -->
+<link rel="icon" type="image/png" href="favicon.png">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,8 +18,9 @@
     --ink-light: #b4b2a9;
     --paper: #faf9f6;
     --paper-warm: #f3efe6;
-    --accent: #ba7517;
-    --accent-light: #fac775;
+    /* Brand plum sampled directly from the Odd Layer logo file (rgb 61, 2, 64) */
+    --accent: #3d0240;
+    --accent-light: #b487ba;
     --border: rgba(26,23,20,0.12);
     --cart-w: 360px;
   }
@@ -61,11 +64,21 @@
   .nav-logo {
     font-family: 'DM Serif Display', serif;
     font-size: 1.3rem;
+    letter-spacing: 0.04em;
     color: var(--ink);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .nav-logo span { color: var(--accent); font-style: italic; }
+
+  .nav-logo img {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
 
   .nav-right {
     display: flex;
@@ -246,7 +259,7 @@
     color: var(--ink);
   }
 
-  .qty-btn:hover { background: var(--accent-light); }
+  .qty-btn:hover { background: var(--accent-light); color: #fff; }
 
   .ci-qty {
     font-size: 0.88rem;
@@ -434,6 +447,20 @@
     text-transform: uppercase;
     color: var(--ink-light);
     margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Small decorative brand mark before section labels — swap for your
+     actual logo glyph (inline SVG or small PNG) once exported. */
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
   }
 
   .divider {
@@ -463,7 +490,7 @@
 
   .product-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(186,117,23,0.4);
+    border-color: rgba(61,2,64,0.35);
     box-shadow: 0 6px 20px rgba(26,23,20,0.07);
   }
 
@@ -583,6 +610,7 @@
     font-size: 2.2rem;
     margin-bottom: 0.75rem;
     font-style: italic;
+    color: var(--accent-light);
   }
 
   .contact-block > p {
@@ -670,20 +698,30 @@
 
   /* ── FOOTER ── */
   footer {
-    background: var(--paper-warm);
+    background: var(--ink);
     border-top: 1px solid var(--border);
     padding: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.76rem;
-    color: var(--ink-mid);
+    color: var(--ink-light);
   }
 
   .footer-logo {
     font-family: 'DM Serif Display', serif;
     font-size: 1rem;
-    color: var(--ink);
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-logo img {
+    height: 20px;
+    width: auto;
+    display: block;
   }
 
   .sr-only {
@@ -736,7 +774,11 @@
 <!-- NAV -->
 <header>
   <nav>
-    <a href="#" class="nav-logo">Odd <span>Layer</span></a>
+    <a href="#" class="nav-logo">
+      <!-- Swap src for the "black on transparent" export once you have the file -->
+      <img src="logo-black-transparent.png" alt="" width="26" height="26" onerror="this.style.display='none'">
+      Odd <span>Layer</span>
+    </a>
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="#shop">Shop</a></li>
@@ -823,7 +865,11 @@
 </main>
 
 <footer>
-  <span class="footer-logo">Odd Layer</span>
+  <span class="footer-logo">
+    <!-- Swap src for the "white on transparent" export once you have the file -->
+    <img src="logo-white-transparent.png" alt="" width="20" height="20" onerror="this.style.display='none'">
+    Odd Layer
+  </span>
   <span>© 2026 Odd Layer. Ontario, Canada.</span>
 </footer>
 
