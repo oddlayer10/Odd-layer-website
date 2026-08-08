@@ -49,33 +49,48 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 200;
+    background: rgba(250,249,246,0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
     height: 60px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Crops the logo file (which has a solid plum background) down to a
+     fixed-height horizontal strip, so it reads as a compact banner badge
+     rather than the full tall image. Adjust --logo-size to zoom in/out. */
+  .logo-crop {
+    --logo-window: 46px;
+    --logo-size: 150px;
+    display: block;
+    height: var(--logo-window);
     overflow: hidden;
+    border-radius: 2px;
   }
 
-  .nav-logo-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  .logo-crop img {
+    height: var(--logo-size);
+    width: auto;
     display: block;
+    margin-top: calc((var(--logo-window) - var(--logo-size)) / 2);
   }
 
-  .nav-logo-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
   }
 
   .nav-links {
-    position: relative;
-    z-index: 1;
     display: flex;
     gap: 2rem;
     list-style: none;
@@ -86,19 +101,18 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--paper);
+    color: var(--ink-mid);
     text-decoration: none;
     transition: color 0.2s;
   }
 
-  .nav-links a:hover { color: var(--accent-light); }
+  .nav-links a:hover { color: var(--accent); }
 
   /* ── CART BUTTON ── */
   .cart-btn {
     position: relative;
-    z-index: 1;
     background: none;
-    border: 1px solid rgba(250,249,246,0.35);
+    border: 1px solid var(--border);
     border-radius: 2px;
     padding: 0.45rem 0.9rem;
     font-family: 'Space Grotesk', sans-serif;
@@ -106,7 +120,7 @@
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--paper);
+    color: var(--ink);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -115,11 +129,11 @@
     white-space: nowrap;
   }
 
-  .cart-btn:hover { background: rgba(250,249,246,0.12); border-color: var(--paper); }
+  .cart-btn:hover { background: var(--paper-warm); border-color: var(--accent); }
 
   .cart-count {
-    background: var(--paper);
-    color: var(--accent);
+    background: var(--accent);
+    color: #fff;
     font-size: 0.65rem;
     font-weight: 600;
     min-width: 18px;
@@ -764,19 +778,22 @@
 <!-- NAV -->
 <header>
   <nav>
-    <a href="#" class="nav-logo-bg" aria-label="Odd Layer — home">
-      <img src="OddLayer (2000 x 1600 px).png" alt="Odd Layer">
+    <a href="#" class="nav-logo" aria-label="Odd Layer — home">
+      <span class="logo-crop">
+        <img src="OddLayer (2000 x 1600 px).png" alt="Odd Layer">
+      </span>
     </a>
-    <ul class="nav-links">
-      <li><a href="#shop">Shop</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <span></span>
-    <button class="cart-btn" id="cartToggle" aria-label="Open cart" aria-expanded="false" aria-controls="cartDrawer" style="justify-self: end;">
-      Cart
-      <span class="cart-count" id="cartCount" aria-live="polite">0</span>
-    </button>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="cart-btn" id="cartToggle" aria-label="Open cart" aria-expanded="false" aria-controls="cartDrawer">
+        Cart
+        <span class="cart-count" id="cartCount" aria-live="polite">0</span>
+      </button>
+    </div>
   </nav>
 </header>
 
